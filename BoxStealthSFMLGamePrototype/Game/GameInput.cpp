@@ -4,11 +4,14 @@ void GameInput::GameInputInit()
 {
 	keyboardPressedFlags = 0;
 	keyboardReleasedFlags = 0;
-	mouseButtonFlags = 0;
-	controllerButtonFlags = 0;
-
+	mouseButtonPressedFlags = 0;
+	mouseButtonReleasedFlags = 0;
+	mouseWheelDelta = 0;
+	controllerButtonPressedFlags = 0;
+	controllerButtonReleasedFlags = 0;
+	mousePosition = sf::Vector2i(0, 0);
 	controllerLeftJoystickPos = sf::Vector2f(0, 0);
-	controllerrightJoystickPos = sf::Vector2f(0, 0);
+	controllerRightJoystickPos = sf::Vector2f(0, 0);
 
 	sf::Joystick::update();
 

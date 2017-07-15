@@ -13,9 +13,11 @@
 #include "../EntityComponents/PhysicsComponent.h"
 #include "../EntityComponents/RenderComponent.h"
 #include "../EntityComponents/InputComponent.h"
-#include "../Level/"
+#include "../Level/LevelManager.h"
+#include "../Level/Level.h"
+#include "../Level/LevelArea.h"
 
-
+extern LevelManager *gLevelManager;
 extern EntityManager *gEntityManager;
 extern GameInput *gGameInput;
 
@@ -39,6 +41,7 @@ public:
 
 public:
 
+	LevelManager *levelManagerPtr;
 	EntityManager *entityManagerPtr;
 	GameInput *gameInputPtr;
 

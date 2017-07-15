@@ -16,8 +16,8 @@ public:
 	~RenderComponent() {}
 
 	virtual void RenderComponentInit() = 0;
-	virtual void RenderComponentDestroy(float deltaTInSeconds) = 0;
-	virtual void RenderComponentUpdate() = 0;
+	virtual void RenderComponentUpdate(float deltaTInSeconds) = 0;
+	virtual void RenderComponentDestroy() = 0;
 
 public:
 

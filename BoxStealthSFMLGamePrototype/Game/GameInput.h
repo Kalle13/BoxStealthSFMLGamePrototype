@@ -34,10 +34,14 @@ public:
 
 	unsigned keyboardPressedFlags;
 	unsigned keyboardReleasedFlags;
-	unsigned mouseButtonFlags;
-	unsigned controllerButtonFlags;
+	unsigned mouseButtonPressedFlags;
+	unsigned mouseButtonReleasedFlags;
+	float mouseWheelDelta;
+	unsigned controllerButtonPressedFlags;
+	unsigned controllerButtonReleasedFlags;
+	sf::Vector2i mousePosition;
 	sf::Vector2f controllerLeftJoystickPos;
-	sf::Vector2f controllerrightJoystickPos;
+	sf::Vector2f controllerRightJoystickPos;
 
 public:
 
