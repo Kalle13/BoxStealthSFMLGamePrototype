@@ -13,7 +13,7 @@ void EntityPlayer::EntityInit()
 	renderCompPtr = (RenderComponent*)(physicsCompPtr + physCompSize + collisionCompSize);
 	inputCompPtr = (InputComponent*)(physicsCompPtr + physCompSize + collisionCompSize + renderCompSize);
 
-	// Initialize entity physics
+	// Initialize entity physics component
 	physicsCompPtr->scale = sf::Vector2f(1.0, 1.0);
 	physicsCompPtr->linPhys.pos = sf::Vector2f(400, 600);
 	physicsCompPtr->linPhys.vel = sf::Vector2f(0, 0);
@@ -22,8 +22,18 @@ void EntityPlayer::EntityInit()
 	physicsCompPtr->rotPhys.angVel = 0;
 	physicsCompPtr->rotPhys.angAcc = 0;
 
-	// 
+	// Initialize entity render component
+	unsigned numVertices = 4;
+	sf::PrimitiveType primType = sf::Quads;
 
+	renderCompPtr->numVertices = numVertices;
+	renderCompPtr->primitiveType = primType;
+	renderCompPtr->mesh.resize(numVertices);
+	renderCompPtr->mesh.setPrimitiveType(primType);
+
+	// Initialize entity collision component
+
+	// Initialize entity input component
 
 	
 }
@@ -31,8 +41,8 @@ void EntityPlayer::EntityInit()
 
 void EntityPlayer::EntityUpdate(float deltaTInSeconds)
 {
-	LinearPhysics entityLinPhys = physicsCompPtr->linPhys;
-	RotationPhysics entityRotPhys = physicsCompPtr->rotPhys;
+	LinearPhysics currentEntityLinPhys = physicsCompPtr->linPhys;
+	RotationPhysics currentEntityRotPhys = physicsCompPtr->rotPhys;
 
 }
 

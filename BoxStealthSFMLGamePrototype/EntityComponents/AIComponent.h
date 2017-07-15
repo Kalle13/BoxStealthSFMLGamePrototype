@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
+#include "EntityComponent.h"
 
 struct PathNode
 {
@@ -16,16 +17,16 @@ struct PathNode
 };
 
 
-class AIComponent
+class AIComponent : public EntityComponent
 {
 public:
 
 	AIComponent() {}
 	~AIComponent() {}
 
-	virtual void AIComponentInit() = 0;
-	virtual void AIComponentUpdate() = 0;
-	virtual void AIComponentDestroy() = 0;
+	virtual void Initialize() override;
+	virtual void Update(float deltaTInSeconds) override;
+	virtual void Destroy() override;
 
 public:
 

@@ -3,14 +3,18 @@
 
 void GameLoop::GameLoopInit()
 {
-	levelManagerPtr = gLevelManager;
-	entityManagerPtr = gEntityManager;
-	gameInputPtr = gGameInput;
+	gameInputPtr = gGameInputPtr;
+	gameConsolePtr = gGameConsolePtr;
+	levelManagerPtr = gLevelManagerPtr;
+	entityManagerPtr = gEntityManagerPtr;
+	
+	gameConsolePtr->gameInputPtr = gGameInputPtr;
+	entityManagerPtr->gameInputPtr = gGameInputPtr;
 
+	// Initialize various systems
 	gameInputPtr->GameInputInit();
 
 }
-
 
 void GameLoop::GameLoopDestroy()
 {

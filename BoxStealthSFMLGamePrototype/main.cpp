@@ -1,10 +1,11 @@
 // main.cpp
 
-#include "Game\GameLoop.h"
+#include "Game/GameLoop.h"
 
-LevelManager *gLevelManager;
-EntityManager *gEntityManager;
-GameInput *gGameInput;
+LevelManager *gLevelManagerPtr;
+EntityManager *gEntityManagerPtr;
+GameInput *gGameInputPtr;
+GameConsole *gGameConsolePtr;
 
 class RenderComponentExample : public RenderComponent
 {
@@ -12,15 +13,15 @@ public:
 	RenderComponentExample() {}
 	~RenderComponentExample() {}
 
-	void RenderComponentInit() override
+	void Initialize()
 	{
 		numVertices = 5;
 		primitiveType = sf::Quads;
 		mesh.resize(numVertices);
 		mesh.setPrimitiveType(primitiveType);
 	}
-	void RenderComponentUpdate(float deltaTInSeconds) override {}
-	void RenderComponentDestroy() override {}
+	void Update(float deltaTInSeconds) {}
+	void Destroy() {}
 };
 
 int main()

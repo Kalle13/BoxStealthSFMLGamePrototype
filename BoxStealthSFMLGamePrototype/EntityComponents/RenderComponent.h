@@ -7,17 +7,18 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
+#include "EntityComponent.h"
 
-class RenderComponent
+class RenderComponent : public EntityComponent
 {
 public:
 
 	RenderComponent() {}
 	~RenderComponent() {}
 
-	virtual void RenderComponentInit() = 0;
-	virtual void RenderComponentUpdate(float deltaTInSeconds) = 0;
-	virtual void RenderComponentDestroy() = 0;
+	virtual void Initialize() override;
+	virtual void Update(float deltaTInSeconds) override;
+	virtual void Destroy() override;
 
 public:
 

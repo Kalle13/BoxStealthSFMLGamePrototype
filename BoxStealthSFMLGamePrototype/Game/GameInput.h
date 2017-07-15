@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <cmath>
 
-enum InputType
+enum InputEventType
 {
 	KeyPressed,
 	KeyReleased,
@@ -16,9 +16,9 @@ enum InputType
 	MouseButtonReleased,
 	ControllerButtonPressed,
 	ControllerButtonReleased,
-	ControllerMoved
+	ControllerJoystickRightMoved,
+	ControllerJoystickLeftMoved
 };
-
 
 class GameInput
 {

@@ -8,19 +8,20 @@
 #include <stdio.h>
 #include <cmath>
 #include "../Game/GameInput.h"
+#include "EntityComponent.h"
 
 class GameInput;
 
-class InputComponent
+class InputComponent : public EntityComponent
 {
 public:
 
 	InputComponent() {};
 	~InputComponent() {};
 
-	virtual void InputComponentInit() = 0;
-	virtual void InputComponentUpdate() = 0;
-	virtual void InputComponentDestroy() = 0;
+	virtual void Initialize() override;
+	virtual void Update(float deltaTInSeconds) override;
+	virtual void Destroy() override;
 
 public:
 

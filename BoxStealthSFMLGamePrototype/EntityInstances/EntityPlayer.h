@@ -12,4 +12,8 @@ public:
 	virtual void EntityUpdate(float deltaTInSeconds) override;
 	virtual void EntityDestroy() override;
 	
+public:
+
+	PhysicsComponent physicsComponent;
+
 };

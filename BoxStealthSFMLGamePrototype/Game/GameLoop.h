@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "GameInput.h"
+#include "GameConsole.h"
 #include "../Entity/Entity.h"
 #include "../Entity/EntityManager.h"
 #include "../EntityComponents/CollisionComponent.h"
@@ -17,9 +18,10 @@
 #include "../Level/Level.h"
 #include "../Level/LevelArea.h"
 
-extern LevelManager *gLevelManager;
-extern EntityManager *gEntityManager;
-extern GameInput *gGameInput;
+extern LevelManager *gLevelManagerPtr;
+extern EntityManager *gEntityManagerPtr;
+extern GameInput *gGameInputPtr;
+extern GameConsole *gGameConsolePtr;
 
 class GameLoop
 {
@@ -41,8 +43,9 @@ public:
 
 public:
 
+	GameInput *gameInputPtr;
+	GameConsole *gameConsolePtr;
 	LevelManager *levelManagerPtr;
 	EntityManager *entityManagerPtr;
-	GameInput *gameInputPtr;
 
 };

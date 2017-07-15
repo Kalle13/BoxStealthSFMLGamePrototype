@@ -7,25 +7,26 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <cmath>
+#include "EntityComponent.h"
 
 // These collision types may be redundant
-enum CollisionComponentType
+enum CollisionComponentType 
 {
 	Rigid,
 	Wall,
 	Surface
 };
 
-class CollisionComponent
+class CollisionComponent : public EntityComponent
 {
 public:
 
 	CollisionComponent() {}
 	~CollisionComponent() {}
 
-	virtual void CollisionComponentInit() = 0;
-	virtual void CollisionComponentUpdate(float deltaTInSeconds) = 0;
-	virtual void CollisionComponentDestroy() = 0;
+	virtual void Initialize() override;
+	virtual void Update(float deltaTInSeconds) override;
+	virtual void Destroy() override;
 
 public:
 

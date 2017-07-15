@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include "EntityComponent.h"
 #include "../Entity/Entity.h"
 
 class Entity;
@@ -29,16 +30,16 @@ struct SceneGraph
 	sf::Transform parentTransformChild;
 };
 
-class PhysicsComponent
+class PhysicsComponent : public EntityComponent
 {
 public:
 
 	PhysicsComponent() {}
 	~PhysicsComponent() {}
 
-	virtual void PhysicsComponentInit() = 0;
-	virtual void PhysicsComponentUpdate(float deltaTInSeconds) = 0;
-	virtual void PhysicsComponentDestroy() = 0;
+	virtual void Initialize() override;
+	virtual void Update(float deltaTInSeconds) override;
+	virtual void Destroy() override;
 
 public:
 
