@@ -1,16 +1,17 @@
-#include "Game.h"
-
-GameLoop::GameLoop()
-{
-   printf("Game constructor\n");
-}
-
-GameLoop::~GameLoop()
-{
-   printf("Game destructor\n");
-}
+// GameLoop.cpp
+#include "GameLoop.h"
 
 void GameLoop::GameLoopInit()
+{
+	entityManagerPtr = gEntityManager;
+	gameInputPtr = gGameInput;
+
+
+
+
+}
+
+void GameLoop::GameLoopRun()
 {
 
    sf::VideoMode videoMode(800,600);
@@ -27,11 +28,11 @@ void GameLoop::GameLoopInit()
       while(timeSinceLastUpdate > timePerFrame)
       {
          timeSinceLastUpdate -= timePerFrame;
-         ProcessEvents();
-         Update(timePerFrame.asSeconds());
+         GameLoopInput();
+         GameLoopUpdate(timePerFrame.asSeconds());
       }
 
-      Render();
+      GameLoopRender();
    }
 }
 
@@ -40,7 +41,7 @@ void GameLoop::GameLoopDestroy()
 	
 }
 
-void GameLoop::ProcessEvents()
+void GameLoop::GameLoopInput()
 {
 
    sf::Event event;
@@ -50,16 +51,25 @@ void GameLoop::ProcessEvents()
       {
          window.close();
       }
+	  if (event.type == sf::Event::KeyPressed)
+	  {
+		  gameInputPtr->
+	  }
+	  if (event.type == sf::Event::KeyReleased)
+	  {
+
+	  }
+
    }
 
 }
 
-void GameLoop::Update(float deltaT)
+void GameLoop::GameLoopUpdate(float deltaTInSeconds)
 {
 
 }
 
-void GameLoop::Render()
+void GameLoop::GameLoopRender()
 {
    window.clear(sf::Color::Black);
 

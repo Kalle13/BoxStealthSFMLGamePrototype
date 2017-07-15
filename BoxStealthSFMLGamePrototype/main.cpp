@@ -1,6 +1,9 @@
 // main.cpp
 
-#include "GameLoop.h"
+#include "Game\GameLoop.h"
+
+EntityManager *gEntityManager;
+GameInput *gGameInput;
 
 int main()
 {

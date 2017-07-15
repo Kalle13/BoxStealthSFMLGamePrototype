@@ -82,9 +82,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Kalle13\Documents\SFML_2.4.2\SFML-2.4.2_x64_Debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Kalle13\Documents\SFML_2.4.2\SFML-2.4.2_x64_Debug\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Kalle13\Documents\SFML_2.4.2\SFML-2.4.2_x64_Debug\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-system-d.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-audio-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -118,13 +119,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GameLoop.cpp" />
+    <ClCompile Include="EntityInstances\EntityPlayer.cpp" />
+    <ClCompile Include="Game\GameInput.cpp" />
+    <ClCompile Include="Game\GameLoop.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Kalle13\Documents\SFML_2.4.2\SFML-2.4.2_x64_Debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameLoop.h" />
+    <ClInclude Include="EntityComponents\AIComponent.h" />
+    <ClInclude Include="EntityComponents\CollisionComponent.h" />
+    <ClInclude Include="EntityComponents\InputComponent.h" />
+    <ClInclude Include="EntityComponents\PhysicsComponent.h" />
+    <ClInclude Include="EntityComponents\RenderComponent.h" />
+    <ClInclude Include="EntityInstances\EntityPlayer.h" />
+    <ClInclude Include="Entity\Entity.h" />
+    <ClInclude Include="Entity\EntityFactory.h" />
+    <ClInclude Include="Entity\EntityManager.h" />
+    <ClInclude Include="Game\GameInput.h" />
+    <ClInclude Include="Game\GameLoop.h" />
+    <ClInclude Include="Level\Level.h" />
+    <ClInclude Include="Level\LevelArea.h" />
+    <ClInclude Include="Level\LevelManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

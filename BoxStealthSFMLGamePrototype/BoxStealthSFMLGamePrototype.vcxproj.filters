@@ -13,18 +13,78 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="EntityComponents">
+      <UniqueIdentifier>{9d30bb09-0907-4412-8167-fe8b7d3cf6c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{7bf5ca61-1a6b-417b-af05-b21c38696a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{b9945347-1515-410d-b0ee-efc5d328c5cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{c286c01d-1ee3-4085-9c8d-686658408b6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EntityInstances">
+      <UniqueIdentifier>{927b6374-c0bf-4ef7-b935-ddd675436ab4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GameLoop.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game\GameInput.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameLoop.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityInstances\EntityPlayer.cpp">
+      <Filter>EntityInstances</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameLoop.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="EntityComponents\PhysicsComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponents\RenderComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponents\CollisionComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\Entity.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\EntityManager.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponents\InputComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameInput.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameLoop.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponents\AIComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Level\Level.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Level\LevelArea.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity\EntityFactory.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Level\LevelManager.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityInstances\EntityPlayer.h">
+      <Filter>EntityInstances</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
