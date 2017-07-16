@@ -1,6 +1,6 @@
 #include "GameInput.h"
 
-void GameInput::GameInputInit()
+void GameInput::GameInputInitialize()
 {
 	keyboardPressedFlags = 0;
 	keyboardReleasedFlags = 0;
@@ -24,9 +24,11 @@ void GameInput::GameInputInit()
 			}
 		}
 	}
-}
 
+	printf("Game Input initialized\n");
+}
+ 
 void GameInput::GameInputDestroy()
 {
-
+	printf("Game Input destroyed\n");
 }

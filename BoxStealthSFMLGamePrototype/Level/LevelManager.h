@@ -20,7 +20,7 @@ public:
 	LevelManager() {}
 	~LevelManager() {}
 
-	void LevelManagerInit();
+	void LevelManagerInitialize();
 	void LevelManagerUpdate();
 	void LevelManagerDestroy();
 

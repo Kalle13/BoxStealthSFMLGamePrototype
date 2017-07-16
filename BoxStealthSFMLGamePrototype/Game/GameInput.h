@@ -27,7 +27,7 @@ public:
 	GameInput() {}
 	~GameInput() {}
 
-	void GameInputInit();
+	void GameInputInitialize();
 	void GameInputDestroy();
 
 public:

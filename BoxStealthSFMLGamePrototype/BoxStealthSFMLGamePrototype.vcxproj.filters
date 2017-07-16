@@ -28,6 +28,9 @@
     <Filter Include="EntityInstances">
       <UniqueIdentifier>{927b6374-c0bf-4ef7-b935-ddd675436ab4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{553a5425-d95c-4eda-85cd-90debec32d3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -41,6 +44,30 @@
     </ClCompile>
     <ClCompile Include="EntityInstances\EntityPlayer.cpp">
       <Filter>EntityInstances</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameConsole.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponents\RenderComponent.cpp">
+      <Filter>EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponents\InputComponent.cpp">
+      <Filter>EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponents\PhysicsComponent.cpp">
+      <Filter>EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponents\CollisionComponent.cpp">
+      <Filter>EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityComponents\AIComponent.cpp">
+      <Filter>EntityComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameWindow.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +112,21 @@
     </ClInclude>
     <ClInclude Include="EntityInstances\EntityPlayer.h">
       <Filter>EntityInstances</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameConsole.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityComponents\EntityComponent.h">
+      <Filter>EntityComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameWindow.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

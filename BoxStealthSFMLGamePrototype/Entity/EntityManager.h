@@ -29,7 +29,7 @@ public:
 	EntityManager() {}
 	~EntityManager() {}
 
-	void EntityManagerInit();
+	void EntityManagerInitialize();
 	void EntityManagerUpdate();
 	void EntityManagerDestroy();
 

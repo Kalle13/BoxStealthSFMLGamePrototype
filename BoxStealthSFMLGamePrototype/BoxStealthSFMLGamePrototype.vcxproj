@@ -120,16 +120,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="EntityComponents\AIComponent.cpp" />
+    <ClCompile Include="EntityComponents\CollisionComponent.cpp" />
+    <ClCompile Include="EntityComponents\InputComponent.cpp" />
+    <ClCompile Include="EntityComponents\PhysicsComponent.cpp" />
+    <ClCompile Include="EntityComponents\RenderComponent.cpp" />
     <ClCompile Include="EntityInstances\EntityPlayer.cpp" />
+    <ClCompile Include="Game\GameConsole.cpp" />
     <ClCompile Include="Game\GameInput.cpp" />
     <ClCompile Include="Game\GameLoop.cpp" />
+    <ClCompile Include="Game\GameWindow.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Kalle13\Documents\SFML_2.4.2\SFML-2.4.2_x64_Debug\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntityComponents\AIComponent.h" />
     <ClInclude Include="EntityComponents\CollisionComponent.h" />
+    <ClInclude Include="EntityComponents\EntityComponent.h" />
     <ClInclude Include="EntityComponents\InputComponent.h" />
     <ClInclude Include="EntityComponents\PhysicsComponent.h" />
     <ClInclude Include="EntityComponents\RenderComponent.h" />
@@ -137,11 +146,15 @@
     <ClInclude Include="Entity\Entity.h" />
     <ClInclude Include="Entity\EntityFactory.h" />
     <ClInclude Include="Entity\EntityManager.h" />
+    <ClInclude Include="Game\GameConsole.h" />
     <ClInclude Include="Game\GameInput.h" />
     <ClInclude Include="Game\GameLoop.h" />
+    <ClInclude Include="Game\GameWindow.h" />
     <ClInclude Include="Level\Level.h" />
     <ClInclude Include="Level\LevelArea.h" />
     <ClInclude Include="Level\LevelManager.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
