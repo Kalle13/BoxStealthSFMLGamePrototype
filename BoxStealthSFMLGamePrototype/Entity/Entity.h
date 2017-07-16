@@ -32,12 +32,5 @@ public:
 	
 public:
 
-	// Create transforms between physics and render components on a 
-	// per-entity basis (i.e. to allow for physics data to effect render data)
-
-	PhysicsComponent *physicsCompPtr;	
-	RenderComponent *renderCompPtr;
-	InputComponent *inputCompPtr;
-	CollisionComponent *collisionCompPtr;
-	AIComponent *aICompPtr;
+	unsigned entityID;
 };

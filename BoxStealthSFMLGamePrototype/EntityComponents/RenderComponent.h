@@ -35,12 +35,21 @@ public:
 	virtual void Update(float deltaTInSeconds) override;
 	virtual void Destroy() override;
 
-	void UpdateMesh(sf::Vector2f& newOrigin, unsigned newVertexCount, sf::Vector2f *newVertexPositionsArray, sf::PrimitiveType& newPrimType);
 	void Draw(sf::RenderWindow& drawWindow);
+
+	void UpdateMesh(sf::Vector2f& newOrigin, 
+					unsigned newVertexCount, 
+					sf::Vector2f *newVertexPositionsArray, 
+					sf::PrimitiveType& newPrimType);
+	// Update Quad Mesh texCoords
+	void UpdateMeshTextureCoordsWithVector(sf::Vector2f *coordsPtr);	// pass an pointer to an array of new texture coords for updating mesh's texCoords
+	void UpdateMeshTextureCoordsWithIndexVector(sf::Vector2f& textureIndexVector);	// pass a vector with (x,y) indices corresponding to the location of the new texture on a tilemap/spritesheet
+	void UpdateRenderPositionAndAngle(sf::Vector2f& position, float& angle);
 
 public:
 
 	unsigned numVertices;
+	float renderAngle;
 	sf::Vector2f renderOrigin;
 	sf::PrimitiveType primitiveType;
 	sf::VertexArray mesh;

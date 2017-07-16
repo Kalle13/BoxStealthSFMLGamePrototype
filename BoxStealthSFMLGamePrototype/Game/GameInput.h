@@ -20,6 +20,57 @@ enum InputEventType
 	ControllerJoystickLeftMoved
 };
 
+struct KeyboardInputData
+{
+	char keyPressed_;
+	char keyReleased_;
+
+	void Init()
+	{
+		keyPressed_ = -2;
+		keyReleased_ = -2;
+	}
+};
+
+struct MouseInputData
+{
+	float mouseWheelDelta_;
+	sf::Vector2i mousePosition_;
+	char mouseButtonPressed_;
+	char mouseButtonReleased_;
+	
+	void Init()
+	{
+		mouseButtonPressed_ = -1;
+		mouseButtonReleased_ = -1;
+		mouseWheelDelta_ = 0;
+		mousePosition_ = sf::Vector2i(0, 0);
+	}
+};
+
+struct ControllerInputData
+{
+	sf::Vector2f controllerLeftJoystickPos_;
+	sf::Vector2f controllerRightJoystickPos_;
+	char controllerButtonPressed_;
+	char controllerButtonReleased_;
+
+	void Init()
+	{
+		controllerButtonPressed_ = -1;
+		controllerButtonReleased_ = -1;
+		controllerLeftJoystickPos_ = sf::Vector2f(0, 0);
+		controllerRightJoystickPos_ = sf::Vector2f(0, 0);
+	}
+};
+
+struct ControllerInformation
+{
+	unsigned controllerID;
+	unsigned numButtons;
+	unsigned numJoysticks;
+};
+
 class GameInput
 {
 public:
@@ -30,21 +81,18 @@ public:
 	void GameInputInitialize();
 	void GameInputDestroy();
 
-public:
-
-	unsigned keyboardPressedFlags;
-	unsigned keyboardReleasedFlags;
-	unsigned mouseButtonPressedFlags;
-	unsigned mouseButtonReleasedFlags;
-	float mouseWheelDelta;
-	unsigned controllerButtonPressedFlags;
-	unsigned controllerButtonReleasedFlags;
-	sf::Vector2i mousePosition;
-	sf::Vector2f controllerLeftJoystickPos;
-	sf::Vector2f controllerRightJoystickPos;
+	// For efficiency, could have Update functions for Keyboard, Mouse, and Joystick, 
+	// and a function pointer to call the function for the input method being used
+	void UpdateInputState(sf::RenderWindow& window);
+	void GetJoystickData();
 
 public:
 
-	unsigned numControllerButtons;
-	unsigned numControllerJoysticks;
+	KeyboardInputData keyboardInputData_;
+	MouseInputData mouseInputData_;
+	ControllerInputData controllerInputData_;
+
+public:
+
+	ControllerInformation controllerInformation_;
 };

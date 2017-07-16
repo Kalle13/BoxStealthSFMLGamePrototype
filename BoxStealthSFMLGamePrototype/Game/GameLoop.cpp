@@ -17,9 +17,9 @@ void GameLoop::GameLoopInit()
 	entityManagerPtr->gameInputPtr = gGameInputPtr;
 
 	// Initialize various systems
-	gameInputPtr->GameInputInitialize();
-	gameConsolePtr->GameConsoleInitialize();
-	gameWindowPtr->Initialize();
+	//gameInputPtr->GameInputInitialize();
+	//gameConsolePtr->GameConsoleInitialize();
+	//gameWindowPtr->Initialize();
 	//entityManagerPtr->EntityManagerInitialize();
 	//levelManagerPtr->LevelManagerInitialize();
 	
@@ -60,7 +60,9 @@ void GameLoop::GameLoopRun()
 
 void GameLoop::GameLoopInput()
 {
-	gameWindowPtr->CheckForInputEvents();
+	gameInputPtr->UpdateInputState(gameWindowPtr->gameWindow);
+
+	// Further function calls for AI input could be implemented here
 }
 
 void GameLoop::GameLoopUpdate(float deltaTInSeconds)

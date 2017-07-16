@@ -15,5 +15,6 @@ public:
 public:
 
 	PhysicsComponent physicsComponent;
+	RenderComponent renderComponent;
 
 };
