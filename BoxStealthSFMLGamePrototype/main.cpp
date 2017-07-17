@@ -16,74 +16,84 @@ int main()
 	RenderComponent renderComponent;
 	GameWindow gameWindow;
 
-	gameWindow.renderComponentPtr = &renderComponent;
-
 	gameInput.GameInputInitialize();
 	renderComponent.Initialize();
-	gameWindow.Initialize(&gameInput);
+	gameWindow.Initialize();
 
 	float angle = 10;
 	float pi = 3.14159;
-	
-	sf::Vector2f windowCenter = sf::Vector2f(400, 300);
-	sf::Vector2f quadCenter = sf::Vector2f(16, 16);
-	sf::VertexArray quad(sf::Quads, 4);
-	quad[0].position = sf::Vector2f(0, 0) + windowCenter - quadCenter;
-	quad[0].color = sf::Color::Red;
-	quad[1].position = sf::Vector2f(32, 0) + windowCenter - quadCenter;
-	quad[1].color = sf::Color::Blue;
-	quad[2].position = sf::Vector2f(32,32) + windowCenter - quadCenter;
-	quad[2].color = sf::Color::Green;
-	quad[3].position = sf::Vector2f(0, 32) + windowCenter - quadCenter;
-	quad[3].color = sf::Color::Yellow;
-	sf::Transform transform;
-	
-	unsigned frameCount = 0;
+	float speed = 20.0; // 20 pixels/second
 
+	sf::Clock clock;
 	float deltaTime = 0;
-	float time = 0;
-	float prevTime = 0;
 
-	printf("Keycount: %d\n",sf::Keyboard::KeyCount);
+	sf::Vertex windowCenter;
+	sf::Vertex quadCenter;
+	windowCenter.position = sf::Vector2f(400, 300);
+	windowCenter.color = sf::Color::Cyan;
+	quadCenter.position = sf::Vector2f(16, 16);
+	quadCenter.color = sf::Color::Magenta;
+	sf::VertexArray quad(sf::Quads, 4);
+	quad[0].position = sf::Vector2f(0, 0) + windowCenter.position - quadCenter.position;
+	quad[0].color = sf::Color::Red;
+	quad[1].position = sf::Vector2f(32, 0) + windowCenter.position - quadCenter.position;
+	quad[1].color = sf::Color::Blue;
+	quad[2].position = sf::Vector2f(32, 32) + windowCenter.position - quadCenter.position;
+	quad[2].color = sf::Color::Green;
+	quad[3].position = sf::Vector2f(0, 32) + windowCenter.position - quadCenter.position;
+	quad[3].color = sf::Color::Yellow;
+
+	quadCenter.position = windowCenter.position;
+
+	sf::Transform transform;
+
+	sf::Vector2f displacementVector = sf::Vector2f(0,0);
+	float displacementMagnitude = 0;
+	sf::Vector2f finalPositionVector = quadCenter.position;
+
+	unsigned frameCount = 0;
 
 	while (gameWindow.WindowIsOpen()) 
 	{
-		gameInput.UpdateInputState(gameWindow.gameWindow);
+		deltaTime = clock.restart().asSeconds();
+
+		gameInput.UpdateInputState(gameWindow.gameWindow_);
 		
-		if (gameInput.keyboardInputData_.keyPressed_ >= 0) {
-			printf("(frame #, key press): (%d,0x%x)\n", frameCount,gameInput.keyboardInputData_.keyPressed_);
-		}
-		if (gameInput.keyboardInputData_.keyReleased_ >= 0) {
-			printf("frame #, key release): (%d,0x%x)\n", frameCount,gameInput.keyboardInputData_.keyReleased_);
-		}
-
-		frameCount++;
-		frameCount %= 60;
-
-		/*
 		transform = sf::Transform::Identity;
 
-		if (gameInput.keyboardPressedFlags & (1<<sf::Keyboard::Right)) {
-			angle = 10;
-			printf("rotation: %.2f\n", angle);
-			transform.rotate(angle, windowCenter);
-			for (unsigned i = 0; i < 4; ++i) {
-				quad[i].position = transform.transformPoint(quad[i].position);
-			}
+		if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::W) {
+			finalPositionVector += sf::Vector2f(0, -50);
 		}
-		else if (gameInput.keyboardPressedFlags & (1 << sf::Keyboard::Left)) {
-			angle = -10;
-			printf("rotation: %.2f\n", angle);
-			transform.rotate(angle, windowCenter);
-			for (unsigned i = 0; i < 4; ++i) {
-				quad[i].position = transform.transformPoint(quad[i].position);
-			}			
+		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::A) {
+			finalPositionVector += sf::Vector2f(-50,0);
+		}
+		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::S) {
+			finalPositionVector += sf::Vector2f(0, 50);
+		}
+		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::D) {
+			finalPositionVector += sf::Vector2f(50, 0);
+		}	
+		
+		displacementVector = speed*deltaTime*(finalPositionVector - quadCenter.position);
+		displacementMagnitude = Vector2Magnitude(finalPositionVector - quadCenter.position);
+
+		if (displacementMagnitude < 0.00000001) {
+			displacementVector = sf::Vector2f(0, 0);
 		}
 
-		gameWindow.gameWindow.clear(sf::Color::Black);
-		gameWindow.gameWindow.draw(quad);
-		gameWindow.gameWindow.display();
-		*/
+		transform.translate(displacementVector);
+
+		quadCenter.position = transform.transformPoint(quadCenter.position);
+		for (unsigned i = 0; i < 4; ++i) {
+			quad[i].position = transform.transformPoint(quad[i].position);
+		}
+
+		gameWindow.Clear(sf::Color::Black);
+		gameWindow.gameWindow_.draw(quad);
+		gameWindow.gameWindow_.draw(&quadCenter,1,sf::Points);
+		gameWindow.gameWindow_.draw(&windowCenter,1,sf::Points);
+		gameWindow.Display();
+		
 	}
 
 	gameInput.GameInputDestroy();

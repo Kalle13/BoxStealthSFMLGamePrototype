@@ -60,7 +60,7 @@ void GameLoop::GameLoopRun()
 
 void GameLoop::GameLoopInput()
 {
-	gameInputPtr->UpdateInputState(gameWindowPtr->gameWindow);
+	gameInputPtr->UpdateInputState(gameWindowPtr->gameWindow_);
 
 	// Further function calls for AI input could be implemented here
 }
@@ -72,9 +72,9 @@ void GameLoop::GameLoopUpdate(float deltaTInSeconds)
 
 void GameLoop::GameLoopRender()
 {
-	gameWindowPtr->gameWindow.clear(sf::Color::Black);
+	gameWindowPtr->Clear(sf::Color::Black);
 
 	// Draw stuff here
 
-	gameWindowPtr->gameWindow.display();
+	gameWindowPtr->Display();
 }

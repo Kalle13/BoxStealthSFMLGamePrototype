@@ -1,33 +1,27 @@
 // GameWindow.cpp
 #include "GameWindow.h"
 
-void GameWindow::Initialize(GameInput *initGameInputPtr)
+void GameWindow::Initialize()
 {	
-	windowWidth = 800;
-	windowHeight = 600;
-	videoMode = sf::VideoMode(windowWidth, windowHeight);
-	gameWindowTitle = "Game Window";
+	windowWidth_ = 800;
+	windowHeight_ = 600;
+	videoMode_ = sf::VideoMode(windowWidth_, windowHeight_);
+	gameWindowTitle_ = "Game Window";
 
-	gameWindow.create(videoMode, gameWindowTitle);
-
-	gameInputPtr = initGameInputPtr;
-
-	if (gameInputPtr == NULL) {
-		printf("(GameWindow::Initialize) Warning: gameInputPtr is uninitialized\n");
-	}
+	gameWindow_.create(videoMode_, gameWindowTitle_);
 }
 
 void GameWindow::Update()
 {
-	unsigned currentWindowWidth = gameWindow.getSize().x;
-	unsigned currentWindowHeight = gameWindow.getSize().y;	
+	unsigned currentWindowWidth = gameWindow_.getSize().x;
+	unsigned currentWindowHeight = gameWindow_.getSize().y;	
 
-	if ((windowWidth != currentWindowWidth) || (windowHeight != currentWindowHeight)) {
-		videoMode.width = windowWidth;
-		videoMode.height = windowHeight;
+	if ((windowWidth_ != currentWindowWidth) || (windowHeight_ != currentWindowHeight)) {
+		videoMode_.width = windowWidth_;
+		videoMode_.height = windowHeight_;
 	}
 
-	gameWindow.create(videoMode, gameWindowTitle);
+	gameWindow_.create(videoMode_, gameWindowTitle_);
 }
 
 void GameWindow::Destroy()
@@ -37,17 +31,20 @@ void GameWindow::Destroy()
 
 bool GameWindow::WindowIsOpen()
 {
-	if (gameWindow.isOpen() && (gameInputPtr != NULL)) {
+	if (gameWindow_.isOpen()) {
 		return true;
 	}	
 	
 	return false;
 }
 
-void GameWindow::Draw()
+void GameWindow::Clear(sf::Color clearWindowColor)
 {
-	gameWindow.clear(sf::Color::Black);
-	renderComponentPtr->Draw(gameWindow);
-	gameWindow.display();
+	gameWindow_.clear(clearWindowColor);
+}
+
+void GameWindow::Display()
+{
+	gameWindow_.display();
 }
 

@@ -49,3 +49,6 @@ public:
 	SceneGraph *sceneGraph;	 // Scene graph pointer to allow for several children
 
 };
+
+float Vector2Magnitude(sf::Vector2f vector);
+float Vector2Dot(sf::Vector2f vector1, sf::Vector2f vector2);
