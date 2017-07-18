@@ -17,4 +17,8 @@ public:
 	PhysicsComponent physicsComponent;
 	RenderComponent renderComponent;
 
+public:
+
+	GameInput *gameInputPtr;
+
 };

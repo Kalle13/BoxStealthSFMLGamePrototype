@@ -12,16 +12,16 @@ class Entity;
 
 struct LinearPhysics
 {
-	sf::Vector2f pos;
-	sf::Vector2f vel;
-	sf::Vector2f acc;
+	sf::Vector2f position_;
+	sf::Vector2f velocity_;
+	sf::Vector2f acceleration_;
 };
 
 struct RotationPhysics
 {
 	float angle;
-	float angVel;
-	float angAcc;
+	float angularVelocity_;
+	float angularAcceleration_;
 };
 
 struct SceneGraph
@@ -43,12 +43,31 @@ public:
 
 public:
 
-	sf::Vector2f scale;
-	LinearPhysics linPhys;
-	RotationPhysics rotPhys;
-	SceneGraph *sceneGraph;	 // Scene graph pointer to allow for several children
+	sf::Vector2f scale_;
+	LinearPhysics linPhys_;
+	RotationPhysics rotPhys_;
+	SceneGraph *sceneGraph_;	 // Scene graph pointer to allow for several children
 
 };
 
+
+
+/*------------------------------------------------------------------------------------------------*/
+/*------------------------------------ Other Physics Functions------------------------------------*/
+/*------------------------------------------------------------------------------------------------*/
+
 float Vector2Magnitude(sf::Vector2f vector);
 float Vector2Dot(sf::Vector2f vector1, sf::Vector2f vector2);
+
+// Vector2ArrayAverage: Returns the average vector from an array of vectors
+sf::Vector2f Vector2ArrayAverage(sf::Vector2f *vector2Array, unsigned numVectors);
+
+// DistanceToFarthestVector2FromPoint: Returns the magnitude of the distance from a vector point to the farthest vector in an array
+float DistanceToFarthestVector2FromPoint(sf::Vector2f *vector2Array, unsigned numVectorsInArray, sf::Vector2f pointVector);
+
+// Use SmoothDisplacement inside of an sf::Transform "translate()" function to move an object smoothly
+// e.g. sf::Transform transfrom.translate(SmoothDisplacement(iVec, fVec, 10.0, deltaT));
+sf::Vector2f SmoothDisplacement(sf::Vector2f initialPositionVector, 
+								sf::Vector2f finalPositionVector, 
+								float speed, 
+								float deltaTimeInSeconds);

@@ -22,6 +22,11 @@ public:
 	virtual void Initialize() override;
 	virtual void Update(float deltaTInSeconds) override;
 	virtual void Destroy() override;
+	
+public:
+
+	// finite state machine for determining how to respond to input
+	unsigned currentState_;
 
 public:
 

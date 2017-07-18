@@ -37,7 +37,7 @@ void RenderComponent::Initialize()
 void RenderComponent::Update(float deltaTInSeconds)
 {
 	// No time-dependent changes at this time
-	// Time-dependence may be required for animations though
+	// Time-dependence may be required for animations though	
 }
 
 void RenderComponent::Destroy()
@@ -75,18 +75,17 @@ void RenderComponent::UpdateMeshTextureCoordsWithIndexVector(sf::Vector2f& textu
 	}
 }
 
-void RenderComponent::UpdateRenderPositionAndAngle(sf::Vector2f& position, float& angle)
+void RenderComponent::UpdateRenderPositionAndAngle(sf::Vector2f& displacementVector, float& displacementAngle)
 {
-	renderAngle = angle;
-	renderOrigin = position;
 	// translate then rotate; will this properly rotate mesh vertices?
-	transform.translate(renderOrigin);
+	transform = sf::Transform::Identity; // reset transform so that next transform is purely a rotation by renderAngle, and a translation by renderOrigin
+	transform.translate(displacementVector);
 	transform.rotate(renderAngle, renderOrigin);
 	renderStates.transform = transform;
-	transform = sf::Transform::Identity; // reset transform so that next transform is purely a rotation by renderAngle, and a translation by renderOrigin
 }
 
 void RenderComponent::Draw(sf::RenderWindow& drawWindow)
 {
 	drawWindow.draw(mesh,renderStates);
+	renderStates.transform = sf::Transform::Identity;
 }

@@ -10,19 +10,22 @@ LevelManager *gLevelManagerPtr;
 EntityManager *gEntityManagerPtr;
 
 
+
 int main()
 {
 	GameInput gameInput;
 	RenderComponent renderComponent;
+	CollisionComponent collisionComponent;
 	GameWindow gameWindow;
 
 	gameInput.GameInputInitialize();
 	renderComponent.Initialize();
+	collisionComponent.Initialize();
 	gameWindow.Initialize();
 
 	float angle = 10;
 	float pi = 3.14159;
-	float speed = 20.0; // 20 pixels/second
+	float speed =  100.0; // 20 pixels/second
 
 	sf::Clock clock;
 	float deltaTime = 0;
@@ -53,6 +56,16 @@ int main()
 
 	unsigned frameCount = 0;
 
+	sf::Vector2f avgVector = sf::Vector2f(0, 0);
+
+	for (unsigned i = 0; i < 4; ++i) {
+		avgVector += quad[i].position;
+	}
+
+	avgVector = sf::Vector2f(avgVector.x/4.0, avgVector.y/4.0);
+
+	collisionComponent.UpdateCollisionBoundsPositionAndOrientation(windowCenter.position - collisionComponent.collisionBoundsCenterVector_, 0);
+
 	while (gameWindow.WindowIsOpen()) 
 	{
 		deltaTime = clock.restart().asSeconds();
@@ -62,41 +75,46 @@ int main()
 		transform = sf::Transform::Identity;
 
 		if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::W) {
-			finalPositionVector += sf::Vector2f(0, -50);
+			finalPositionVector += sf::Vector2f(0, -10);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::A) {
-			finalPositionVector += sf::Vector2f(-50,0);
+			finalPositionVector += sf::Vector2f(-10,0);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::S) {
-			finalPositionVector += sf::Vector2f(0, 50);
+			finalPositionVector += sf::Vector2f(0, 10);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::D) {
-			finalPositionVector += sf::Vector2f(50, 0);
-		}	
-		
-		displacementVector = speed*deltaTime*(finalPositionVector - quadCenter.position);
-		displacementMagnitude = Vector2Magnitude(finalPositionVector - quadCenter.position);
-
-		if (displacementMagnitude < 0.00000001) {
-			displacementVector = sf::Vector2f(0, 0);
+			finalPositionVector += sf::Vector2f(10,0);
 		}
-
-		transform.translate(displacementVector);
+		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::Space) {
+			printf("average vector: (%.2f,%.2f)\n", avgVector.x, avgVector.y);
+		}
+		
+		transform.translate(SmoothDisplacement(quadCenter.position, finalPositionVector, speed, deltaTime));
 
 		quadCenter.position = transform.transformPoint(quadCenter.position);
 		for (unsigned i = 0; i < 4; ++i) {
 			quad[i].position = transform.transformPoint(quad[i].position);
 		}
 
+		avgVector = sf::Vector2f(0, 0);
+		for (unsigned i = 0; i < 4; ++i) {
+			avgVector += quad[i].position;
+		}		
+		avgVector = sf::Vector2f(avgVector.x / 4.0, avgVector.y / 4.0);
+		
+
 		gameWindow.Clear(sf::Color::Black);
 		gameWindow.gameWindow_.draw(quad);
 		gameWindow.gameWindow_.draw(&quadCenter,1,sf::Points);
 		gameWindow.gameWindow_.draw(&windowCenter,1,sf::Points);
+		collisionComponent.Draw(gameWindow.gameWindow_);
 		gameWindow.Display();
 		
 	}
 
 	gameInput.GameInputDestroy();
+	collisionComponent.Destroy();
 	renderComponent.Destroy();
 	gameWindow.Destroy();
 

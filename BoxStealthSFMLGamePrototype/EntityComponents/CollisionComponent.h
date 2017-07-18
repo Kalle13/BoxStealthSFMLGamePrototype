@@ -8,6 +8,17 @@
 #include <stdio.h>
 #include <cmath>
 #include "EntityComponent.h"
+#include "PhysicsComponent.h"
+
+#define DEFAULT_NUM_COLLISION_VERTICES (4)
+#define DEFAULT_COLLISION_PRIMITIVE_TYPE (sf::Lines)
+#define DEFAULT_COLLISION_BOUNDS_WIDTH (32)
+#define DEFAULT_COLLISION_BOUNDS_HEIGHT (32)
+#define DEFAULT_COLLISION_VECTOR_CENTER (sf::Vector2f(DEFAULT_COLLISION_BOUNDS_WIDTH/2.0, DEFAULT_COLLISION_BOUNDS_HEIGHT/2.0))
+#define DEFAULT_COLLISION_VECTOR_COORD_0 (sf::Vector2f(0,0))
+#define DEFAULT_COLLISION_VECTOR_COORD_1 (sf::Vector2f(DEFAULT_COLLISION_BOUNDS_WIDTH,0))
+#define DEFAULT_COLLISION_VECTOR_COORD_2 (sf::Vector2f(DEFAULT_COLLISION_BOUNDS_WIDTH,DEFAULT_COLLISION_BOUNDS_HEIGHT))
+#define DEFAULT_COLLISION_VECTOR_COORD_3 (sf::Vector2f(0,DEFAULT_COLLISION_BOUNDS_HEIGHT))
 
 // These collision types may be redundant
 enum CollisionComponentType 
@@ -28,10 +39,23 @@ public:
 	virtual void Update(float deltaTInSeconds) override;
 	virtual void Destroy() override;
 
+	void Draw(sf::RenderWindow& window);
+	void UpdateCollisionBoundsPositionAndOrientation(sf::Vector2f displacementVector, float displacementAngle);
+
 public:
 
-	unsigned numberOfCollisionVertices;
-	sf::PrimitiveType primitiveType;
-	sf::VertexArray collisionBounds;
+	// 'minDistanceForCollision_' - the minimum distance between the collisionBoundsCenter 
+	// and another collision boundary before collision detection must be resolved using a 
+	// finer algorithm. 
+	// (minDistanceForCollision_ = Vector2Magnitude(collisionBoundsCenterVector_ - (furthest "collisionBoundsVertexArray_" vertex from center))
+
+	unsigned numCollisionBoundsVertices_;
+	float minDistanceForCollision_;	
+	sf::Vector2f collisionBoundsCenterVector_;
+	sf::Vector2f *collisionBoundsVectorArray_;
+
+	// Add a vertex array component to visualize the collision bounds (in debug mode)
+	sf::PrimitiveType collisionBoundsPrimitiveType_;
+	sf::VertexArray collisionBoundsVertexArray_;
 
 };
