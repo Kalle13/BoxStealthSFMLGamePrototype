@@ -75,16 +75,16 @@ int main()
 		transform = sf::Transform::Identity;
 
 		if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::W) {
-			finalPositionVector += sf::Vector2f(0, -10);
+			finalPositionVector += sf::Vector2f(0, -100);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::A) {
-			finalPositionVector += sf::Vector2f(-10,0);
+			finalPositionVector += sf::Vector2f(-100,0);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::S) {
-			finalPositionVector += sf::Vector2f(0, 10);
+			finalPositionVector += sf::Vector2f(0, 100);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::D) {
-			finalPositionVector += sf::Vector2f(10,0);
+			finalPositionVector += sf::Vector2f(100,0);
 		}
 		else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::Space) {
 			printf("average vector: (%.2f,%.2f)\n", avgVector.x, avgVector.y);
@@ -102,7 +102,8 @@ int main()
 			avgVector += quad[i].position;
 		}		
 		avgVector = sf::Vector2f(avgVector.x / 4.0, avgVector.y / 4.0);
-		
+
+		collisionComponent.UpdateCollisionBoundsPositionAndOrientation(avgVector - collisionComponent.collisionBoundsCenterVector_, 0);
 
 		gameWindow.Clear(sf::Color::Black);
 		gameWindow.gameWindow_.draw(quad);
