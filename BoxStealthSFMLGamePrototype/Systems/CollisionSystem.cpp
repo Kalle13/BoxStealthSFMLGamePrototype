@@ -17,7 +17,11 @@ void CollisionSystem::Destroy()
 void CollisionSystem::RunCollisionDetection()
 {
 	for (unsigned i = 0; i < collisionComponentIndex; ++i) {
-
+		for (unsigned j = i + 1; j < collisionComponentIndex; ++j) {
+			sf::Vector2f primaryCollisionObjectCenterVector = collisionComponentPtrArray[i]->collisionBoundsCenterVector_;
+			sf::Vector2f secondaryCollisionObjectCenterVector = collisionComponentPtrArray[j]->collisionBoundsCenterVector_;
+			float primaryLeastDistanceForCollision
+		}
 	}
 }
 

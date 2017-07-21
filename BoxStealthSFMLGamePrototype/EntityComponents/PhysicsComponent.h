@@ -58,6 +58,7 @@ public:
 
 float Vector2Magnitude(sf::Vector2f vector);
 float Vector2Dot(sf::Vector2f vector1, sf::Vector2f vector2);
+float Vector2CrossProductSignedMagnitude(sf::Vector2f vector1, sf::Vector2f vector2);
 
 // Vector2ArrayAverage: Returns the average vector from an array of vectors
 sf::Vector2f Vector2ArrayAverage(sf::Vector2f *vector2Array, unsigned numVectors);

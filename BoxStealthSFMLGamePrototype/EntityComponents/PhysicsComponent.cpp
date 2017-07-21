@@ -27,6 +27,20 @@ float Vector2Dot(sf::Vector2f vector1, sf::Vector2f vector2)
 	return vector1.x*vector2.x + vector1.y*vector2.y;
 }
 
+float Vector2CrossProductSignedMagnitude(sf::Vector2f vector1, sf::Vector2f vector2)
+{
+	return vector1.x*vector2.y - vector1.y*vector2.x;
+
+	/* the following cross product calculations may be useful in 3 dimensions
+
+	float vector1SquaredMagnitude = vector1.x*vector1.x + vector1.y*vector1.y;
+	float vector2SquaredMagnitude = vector2.x*vector2.x + vector2.y*vector2.y;
+	float dotProductOfVectors = vector1.x*vector2.x + vector1.y*vector2.y;
+
+	crossProductMagnitude = sqrt(vector1SquaredMagnitude*vector2SquaredMagnitude - dotProductOfVectors*dotProductOfVectors);
+	*/	
+}
+
 sf::Vector2f Vector2ArrayAverage(sf::Vector2f *vector2Array, unsigned numVectors)
 {
 	sf::Vector2f averageVector = sf::Vector2f(0, 0);
