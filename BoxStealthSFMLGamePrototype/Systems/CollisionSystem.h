@@ -17,7 +17,7 @@ class CollisionComponent;
 // The system will use collision detection algorithms to determine
 // when a collision occurs. Collisions will need to be flagged and 
 // combined with some information about the collision (e.g. collision
-// components involved) so that future game systems (e.g. game logic 
+// components involved) so that other game systems (e.g. game logic 
 // and physics) can handle these events accordingly.
 
 class CollisionSystem

@@ -62,6 +62,7 @@ float Vector2CrossProductSignedMagnitude(sf::Vector2f vector1, sf::Vector2f vect
 
 // Vector2ArrayAverage: Returns the average vector from an array of vectors
 sf::Vector2f Vector2ArrayAverage(sf::Vector2f *vector2Array, unsigned numVectors);
+sf::Vector2f VertexArrayVector2Average(sf::Vertex *vertexArray, int numVertices);
 
 // DistanceToFarthestVector2FromPoint: Returns the magnitude of the distance from a vector point to the farthest vector in an array
 float DistanceToFarthestVector2FromPoint(sf::Vector2f *vector2Array, unsigned numVectorsInArray, sf::Vector2f pointVector);

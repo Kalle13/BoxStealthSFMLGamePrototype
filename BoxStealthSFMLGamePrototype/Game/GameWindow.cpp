@@ -26,7 +26,7 @@ void GameWindow::Update()
 
 void GameWindow::Destroy()
 {
-	printf("Game Window detroyed\n");
+	printf("Game Window destroyed\n");
 }
 
 bool GameWindow::WindowIsOpen()
@@ -36,6 +36,11 @@ bool GameWindow::WindowIsOpen()
 	}	
 	
 	return false;
+}
+
+void GameWindow::CloseWindow()
+{
+	gameWindow_.close();
 }
 
 void GameWindow::Clear(sf::Color clearWindowColor)

@@ -20,7 +20,12 @@ void CollisionSystem::RunCollisionDetection()
 		for (unsigned j = i + 1; j < collisionComponentIndex; ++j) {
 			sf::Vector2f primaryCollisionObjectCenterVector = collisionComponentPtrArray[i]->collisionBoundsCenterVector_;
 			sf::Vector2f secondaryCollisionObjectCenterVector = collisionComponentPtrArray[j]->collisionBoundsCenterVector_;
-			float primaryLeastDistanceForCollision
+			float primaryLeastDistanceForCollision = DistanceToFarthestVector2FromPoint(collisionComponentPtrArray[i]->collisionBoundsVectorArray_,
+																						4, primaryCollisionObjectCenterVector);
+			// If primaryLeastDistanceForCollision < 
+
+
+
 		}
 	}
 }

@@ -27,6 +27,7 @@ public:
 	void Destroy();
 
 	bool WindowIsOpen();
+	void CloseWindow();
 	void Clear(sf::Color clearWindowColor);
 	void Display();
 
