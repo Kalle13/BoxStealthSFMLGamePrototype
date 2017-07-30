@@ -101,6 +101,8 @@ void CollisionDataObjectQuickInit(CollisionData& collisionData);
 void DisplaceCollisionDataObject(sf::Vector2f displacement, CollisionData& collisionObject);
 void SetCollisionDataPosition(sf::Vector2f position, CollisionData &collisionData);
 sf::Vector2f FindClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
+sf::Vector2f FindSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
+sf::Vector2f FurthestVertexFromVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
 
 int main()
 {
@@ -171,18 +173,25 @@ int main()
 				sf::Vector2f closestAVectorToBVector = FindClosestVertexToVector2(closestBVector,
 																				  collisionObject[i].collisionVerticesArray,
 																				  collisionObject[i].numVertices);
+				
+				sf::Vector2f secondClosestAVectorToBVector = FindSecondClosestVertexToVector2(closestBVector, 
+																							  collisionObject[i].collisionVerticesArray,
+																							  collisionObject[i].numVertices);
 
 				sf::Vector2f objectAAverageVector = collisionObject[i].boundsAverageVector;
 				
+				// Need to use two closest A vertex vectors to B vertex vector to project B vertex vector
+				// onto difference vector of two A vectors. Then determine if B vector is closer to A avg vector than
+				// projected B vector (meaning B vector is inside object A, and a collision has occurred).
+
+
 				float magnitudeOfAAverageVectorToAVector = Vector2Magnitude(closestAVectorToBVector - objectAAverageVector);
 				assert(magnitudeOfAAverageVectorToAVector > 0);
 				
 				float magnitudeOfAAverageVectorToBVector = Vector2Magnitude(closestBVector - objectAAverageVector);
 				assert(magnitudeOfAAverageVectorToBVector > 0);
 
-				//printf("magAavgToAVec: %.2f, magAavgToBVec: %.2f\n", magnitudeOfAAverageVectorToAVector, magnitudeOfAAverageVectorToBVector);
-				if (magnitudeOfAAverageVectorToAVector > magnitudeOfAAverageVectorToBVector) {
-					//printf("Any collision flags?\n");
+				if (magnitudeOfAAverageVectorToAVector > magnitudeOfAAverageVectorToBVector) {				
 					collisionFlagContainer.AddCollisionFlag(collisionObject[i].collisionDataID, 
 															collisionObject[j].collisionDataID, 
 															closestAVectorToBVector, 
@@ -279,4 +288,41 @@ sf::Vector2f FindClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexA
 	}
 	
 	return closestVector;
+}
+
+sf::Vector2f FindSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
+{
+	sf::Vector2f closestVector = FindClosestVertexToVector2(vector, vertexArray, vertexCount);
+	sf::Vector2f secondClosestVector = FurthestVertexFromVector2(vector, vertexArray, vertexCount);
+	float closestVectorDistance = Vector2Magnitude(closestVector - vector);
+	float secondClosestVectorDistance = Vector2Magnitude(secondClosestVector - vector);
+	float distanceBetweenVectors;
+
+
+	for (int i = 0; i < vertexCount; ++i) {
+		distanceBetweenVectors = Vector2Magnitude(vertexArray[i].position - vector);
+		if((distanceBetweenVectors > closestVectorDistance) && (distanceBetweenVectors < secondClosestVectorDistance)){
+			secondClosestVectorDistance = distanceBetweenVectors;
+			secondClosestVector = vertexArray[i].position;
+		}
+	}
+
+	return secondClosestVector;
+}
+
+sf::Vector2f FurthestVertexFromVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
+{
+	sf::Vector2f furthestVector = sf::Vector2f(0,0);
+	float furthestDistance = 0;
+	float distanceToVector;
+
+	for (int i = 0; i < vertexCount; ++i) {
+		distanceToVector = Vector2Magnitude(vertexArray[i].position - vector);
+		if (distanceToVector > furthestDistance) {
+			furthestDistance = distanceToVector;
+			furthestVector = vertexArray[i].position;
+		}
+	}
+
+	return furthestVector;
 }
