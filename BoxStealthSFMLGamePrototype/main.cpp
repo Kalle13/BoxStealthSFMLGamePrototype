@@ -116,6 +116,35 @@ int main()
 	CollisionData collisionObject[numCollisionDataObjects];	
 	CollisionFlagContainer collisionFlagContainer;
 
+	// Some debugging vectors
+	sf::VertexArray vectorToCollisionInterface(sf::Lines, 2);
+	sf::VertexArray vectorToClosestBVector(sf::Lines, 2);
+	sf::VertexArray vectorToClosestAVector(sf::Lines, 2);
+	sf::VertexArray vectorSecondToClosestAVector(sf::Lines, 2);
+	sf::VertexArray vectorDifferenceBetweenAVectors(sf::Lines, 2);
+
+	// Start debug vector initialization
+	vectorToCollisionInterface[0].color = sf::Color::Black;
+	vectorToCollisionInterface[1].color = sf::Color::Black;
+	vectorToCollisionInterface[0].position = sf::Vector2f(0, 0);
+	vectorToCollisionInterface[1].position = sf::Vector2f(0, 0);
+	
+	vectorToClosestBVector[0].color = sf::Color::Black;
+	vectorToClosestBVector[1].color = sf::Color::Black;
+	vectorToClosestBVector[0].position = sf::Vector2f(0,0);
+
+	vectorToClosestAVector[0].color = sf::Color::Black;
+	vectorToClosestAVector[1].color = sf::Color::Black;
+	vectorToClosestAVector[0].position = sf::Vector2f(0, 0);
+
+	vectorSecondToClosestAVector[0].color = sf::Color::Black;
+	vectorSecondToClosestAVector[1].color = sf::Color::Black;
+	vectorSecondToClosestAVector[0].position = sf::Vector2f(0, 0);
+
+	vectorDifferenceBetweenAVectors[0].color = sf::Color::Black;
+	vectorDifferenceBetweenAVectors[1].color = sf::Color::Black;
+	vectorDifferenceBetweenAVectors[0].position = sf::Vector2f(0,0);
+	// End debug vector initialization
 
 	gameInput.GameInputInitialize();
 	collisionFlagContainer.Initialize();
@@ -124,8 +153,8 @@ int main()
 	collisionObject[1].collisionDataID = 1;
 
 	// Triangular objects
-	collisionObject[0].numVertices = 8;
-	collisionObject[1].numVertices = 8;
+	collisionObject[0].numVertices = 3;
+	collisionObject[1].numVertices = 3;
 
 	collisionObject[0].CollisionDataMalloc();
 	collisionObject[1].CollisionDataMalloc();
@@ -173,6 +202,7 @@ int main()
 		for (int i = 0; i < numCollisionDataObjects; ++i) {
 			for (int j = i + 1; j < numCollisionDataObjects; ++j) {				
 
+				// Can get closest vertex Vector and Index in one function with pointer args: *closestVector, *closestIndex
 				sf::Vector2f closestBVector = FindClosestVertexToVector2(collisionObject[i].boundsAverageVector, 
 																		 collisionObject[j].collisionVerticesArray, 
 																		 collisionObject[j].numVertices);
@@ -199,7 +229,52 @@ int main()
 
 				sf::Vector2f objectAAverageVector = collisionObject[i].boundsAverageVector;
 				
+				vectorToClosestBVector[1].position = closestBVector;
+				vectorToClosestAVector[1].position = closestAVectorToBVector;
+				vectorSecondToClosestAVector[1].position = secondClosestAVectorToBVector;
+				vectorDifferenceBetweenAVectors[0].position = closestAVectorToBVector;
+				vectorDifferenceBetweenAVectors[1].position = secondClosestAVectorToBVector;
 
+				// Need to use two closest A vertex vectors to B vertex vector to project B vertex vector
+				// onto difference vector of two A vectors. Then determine if B vector is closer to A avg vector than
+				// projected B vector (meaning B vector is inside object A, and a collision has occurred).
+
+				// may still need to add 'closestAVectorToBVector' to projectedClosest...Vectors
+				sf::Vector2f tempProjectedClosestBVectorOntoClosestAVectors = Vector2Project(closestBVector - secondClosestAVectorToBVector, closestAVectorToBVector- secondClosestAVectorToBVector);				
+
+				sf::Vector2f realProjectedClosestBVectorOntoClosestAVectors = secondClosestAVectorToBVector + tempProjectedClosestBVectorOntoClosestAVectors;
+
+				vectorToCollisionInterface[1].position = realProjectedClosestBVectorOntoClosestAVectors;
+
+				float magnitudeClosestBVectorToAAverageVector = Vector2Magnitude(objectAAverageVector - closestBVector);
+				float magnitudeProjectedClosestBVectorToAAverageVector = Vector2Magnitude(objectAAverageVector - realProjectedClosestBVectorOntoClosestAVectors);
+
+				if(magnitudeClosestBVectorToAAverageVector < magnitudeProjectedClosestBVectorToAAverageVector) {					
+					collisionFlagContainer.AddCollisionFlag(collisionObject[i].collisionDataID,
+															collisionObject[j].collisionDataID,
+															closestAVectorToBVector,
+															closestBVector);
+				}
+
+				if (clock.getElapsedTime().asMilliseconds() > 500) {
+					/*
+					printf("bVector: (%.2f,%.2f)\na1Vector: (%.2f,%.2f)\na2Vector: (%.2f,%.2f)\n",	closestBVector.x,
+																									closestBVector.y,
+																									closestAVectorToBVector.x,
+																									closestAVectorToBVector.y,
+																									secondClosestAVectorToBVector.x,
+																									secondClosestAVectorToBVector.y);
+					*/
+
+					if (collisionFlagContainer.numCollisionFlags > 0) {
+						printf("numCollisionFlags: %d\n", collisionFlagContainer.numCollisionFlags);
+						collisionFlagContainer.PrintCollisionFlags();
+					}
+
+					clock.restart();
+				}
+
+				// Change CollisionObject element vertex colors based on collision/proximity to other CollisionObject elements
 				// Reset vertex colors
 				for (int i = 0; i < numCollisionDataObjects; ++i) {
 					int numVertices = collisionObject[i].numVertices;
@@ -219,49 +294,38 @@ int main()
 				collisionObject[0].collisionVerticesArray[indexOfClosestAVectorToBVector].color = sf::Color::Blue;
 				collisionObject[0].collisionVerticesArray[indexOfSecondClosestAVectorToBVector].color = sf::Color::Yellow;
 				collisionObject[1].collisionVerticesArray[indexOfClosestBVertex].color = sf::Color::Green;
-
-				// Need to use two closest A vertex vectors to B vertex vector to project B vertex vector
-				// onto difference vector of two A vectors. Then determine if B vector is closer to A avg vector than
-				// projected B vector (meaning B vector is inside object A, and a collision has occurred).
-
-				if (clock.getElapsedTime().asMilliseconds() > 5000) {
-					printf("bVector: (%.2f,%.2f)\na1Vector: (%.2f,%.2f)\na2Vector: (%.2f,%.2f)\n",	closestBVector.x,
-																									closestBVector.y,
-																									closestAVectorToBVector.x,
-																									closestAVectorToBVector.y,
-																									secondClosestAVectorToBVector.x,
-																									secondClosestAVectorToBVector.y);
-					clock.restart();
-				}
-
-				float magnitudeOfAAverageVectorToAVector = Vector2Magnitude(closestAVectorToBVector - objectAAverageVector);
-				assert(magnitudeOfAAverageVectorToAVector > 0);
 				
-				float magnitudeOfAAverageVectorToBVector = Vector2Magnitude(closestBVector - objectAAverageVector);
-				assert(magnitudeOfAAverageVectorToBVector > 0);
-
-				if (magnitudeOfAAverageVectorToAVector > magnitudeOfAAverageVectorToBVector) {				
-					collisionFlagContainer.AddCollisionFlag(collisionObject[i].collisionDataID, 
-															collisionObject[j].collisionDataID, 
-															closestAVectorToBVector, 
-															closestBVector);
+				// Change entire object color if there is a collision
+				int numCollisionFlags = collisionFlagContainer.numCollisionFlags;
+				for (int i = 0; i < numCollisionFlags; ++i) {
+					int collisionID1 = collisionFlagContainer.collisionFlagArray[i].collisionDataID1;
+					int collisionID2 = collisionFlagContainer.collisionFlagArray[i].collisionDataID2;
+					for (int j = 0; j < numCollisionDataObjects; ++j) {
+						// Change CollisionObject with ID1 to Magenta
+						if (collisionObject[j].collisionDataID == collisionID1) {
+							for (int k = 0; k < collisionObject[j].numVertices; ++k) {
+								collisionObject[j].collisionVerticesArray[k].color = sf::Color::Magenta;
+							}													 
+						} // Change CollisionObject with ID2 to Cyan
+						else if (collisionObject[j].collisionDataID == collisionID1) {
+							for (int k = 0; k < collisionObject[j].numVertices; ++k) {
+								collisionObject[j].collisionVerticesArray[k].color = sf::Color::Cyan;
+							}
+						}						
+					}					
 				}
 			}
 		}
-
-		if (collisionFlagContainer.numCollisionFlags > 0) {
-			//printf("numCollisionFlags: %d\n", collisionFlagContainer.numCollisionFlags);
-			collisionFlagContainer.PrintCollisionFlags();
-		}
-		else {
-			//printf("No collision flags\n");
-		}
-
+	
 		gameWindow.Clear(sf::Color::Red);
-		gameWindow.gameWindow_.draw(collisionObject[0].collisionVerticesArray,collisionObject[0].numVertices,sf::Quads);
-		gameWindow.gameWindow_.draw(collisionObject[1].collisionVerticesArray, collisionObject[1].numVertices, sf::LineStrip);
+		gameWindow.gameWindow_.draw(collisionObject[0].collisionVerticesArray,collisionObject[0].numVertices,sf::Triangles);
+		gameWindow.gameWindow_.draw(collisionObject[1].collisionVerticesArray, collisionObject[1].numVertices, sf::Triangles);
+		gameWindow.gameWindow_.draw(vectorToCollisionInterface);
+		gameWindow.gameWindow_.draw(vectorToClosestBVector);
+		gameWindow.gameWindow_.draw(vectorToClosestAVector);
+		gameWindow.gameWindow_.draw(vectorSecondToClosestAVector);
+		gameWindow.gameWindow_.draw(vectorDifferenceBetweenAVectors);		
 		gameWindow.Display();
-
 	}
 
 	// Free/Destroy everything
