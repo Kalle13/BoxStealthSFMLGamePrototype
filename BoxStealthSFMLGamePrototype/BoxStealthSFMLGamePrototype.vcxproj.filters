@@ -34,6 +34,9 @@
     <Filter Include="Systems">
       <UniqueIdentifier>{fed0cfa2-1453-4342-983f-49565fbc47af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{65e1e956-ffe5-4a52-92a4-7eae9cb086e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="Systems\CollisionSystem.cpp">
       <Filter>Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\Vector2Utility.cpp">
+      <Filter>Utility</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -136,6 +142,9 @@
     </ClInclude>
     <ClInclude Include="Systems\CollisionSystem.h">
       <Filter>Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Vector2Utility.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

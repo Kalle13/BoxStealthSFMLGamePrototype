@@ -28,7 +28,7 @@ void GameLoop::GameLoopInit()
 
 void GameLoop::GameLoopDestroy()
 {
-	gameInputPtr->GameInputDestroy();
+	gameInputPtr->Destroy();
 	gameConsolePtr->GameConsoleDestroy();
 	gameWindowPtr->Destroy();
 	sceneManagerPtr->SceneManagerDestroy();

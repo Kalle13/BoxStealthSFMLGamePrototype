@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <cmath>
 #include "EntityComponent.h"
-#include "PhysicsComponent.h"
+#include "../Utility/Vector2Utility.h"
 
 #define DEFAULT_NUM_COLLISION_VERTICES (4)
 #define DEFAULT_COLLISION_PRIMITIVE_TYPE (sf::Lines)

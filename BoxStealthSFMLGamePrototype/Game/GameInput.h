@@ -78,8 +78,8 @@ public:
 	GameInput() {}
 	~GameInput() {}
 
-	void GameInputInitialize();
-	void GameInputDestroy();
+	void Initialize();
+	void Destroy();
 
 	// For efficiency, could have Update functions for Keyboard, Mouse, and Joystick, 
 	// and a function pointer to call the function for the input method being used

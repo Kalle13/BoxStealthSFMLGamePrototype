@@ -2,9 +2,7 @@
 
 #include "Game/GameLoop.h"
 #include <assert.h>
-
-#define PI 3.141592654
-#define MAX_COLLISION_FLAG_ELEMENTS 10
+#include "Systems/CollisionSystem.h"
 
 GameWindow *gGameWindowPtr;
 GameInput *gGameInputPtr;
@@ -13,166 +11,30 @@ SceneManager *gSceneManagerPtr;
 LevelManager *gLevelManagerPtr;
 EntityManager *gEntityManagerPtr;
 
-//enum CollisionShape {Triangle, Octagon};
-
-struct CollisionData
-{
-	int collisionDataID;				// An ID# for identifying a CollisionData instance
-	int numVertices;					// Number of vertices comprising the collision boundary
-	sf::Vector2f boundsAverageVector;	// Vector that is the average of all vectors comprising the collision boundary
-	sf::Vertex *collisionVerticesArray;	// The collision boundary vertices (can also use sf::Vector2f array; sf::Vertex allows for collision bounds to be rendered)
-
-	void CollisionDataMalloc(){
-		collisionVerticesArray = (sf::Vertex*)malloc(numVertices * sizeof(sf::Vertex));
-	}
-
-	void CollisionDataFree() {
-		free(collisionVerticesArray);
-	}
-};
-
-struct CollisionFlag
-{
-	int collisionDataID1;
-	int collisionDataID2;
-	sf::Vector2f collisionVertexVector1;
-	sf::Vector2f collisionVertexVector2;
-};
-
-class CollisionFlagContainer 
-{
-public:
-	CollisionFlagContainer() {}
-	~CollisionFlagContainer() {}
-
-	void Initialize() {
-		printf("[CollisionFlagContainer::Initialize] Initialized\n");
-		numCollisionFlags = 0;
-		collisionFlagArray = (CollisionFlag*)malloc(MAX_COLLISION_FLAG_ELEMENTS * sizeof(CollisionFlag));
-	}
-	
-	void Destroy() {
-		printf("[CollisionFlagContainer::Destroy] Destroyed\n");
-		free(collisionFlagArray);
-	}
-	
-	void AddCollisionFlag(int ID1, int ID2, sf::Vector2f vertexVector1, sf::Vector2f vertexVector2) {
-		if (numCollisionFlags < MAX_COLLISION_FLAG_ELEMENTS) {
-			collisionFlagArray[numCollisionFlags].collisionDataID1 = ID1;
-			collisionFlagArray[numCollisionFlags].collisionDataID2 = ID2;
-			collisionFlagArray[numCollisionFlags].collisionVertexVector1 = vertexVector1;
-			collisionFlagArray[numCollisionFlags].collisionVertexVector2 = vertexVector2;
-			numCollisionFlags++;
-		}
-		else {
-			printf("[CollisionFlagContainer::AddCollisionFlag] No more room for collision flags\n");
-		}
-	}
-
-	void ClearCollisionFlags() {
-		numCollisionFlags = 0; // set numCollisionFlags to zero to simply overwrite previous flags on next loop
-	}
-
-	void PrintCollisionFlags() {
-		if (numCollisionFlags > 1) {
-			printf("\n[CollisionFlagContainer::PrintCollisionFlags]----------\n");
-			for (int i = 0; i < numCollisionFlags; ++i) {
-				printf("ID1: %d, ID2: %d, VertexVector1: (%.2f,%.2f), VertexVector2: (%.2f,%.2f)\n", 
-						collisionFlagArray[i].collisionDataID1,
-						collisionFlagArray[i].collisionDataID2,
-						collisionFlagArray[i].collisionVertexVector1.x,
-						collisionFlagArray[i].collisionVertexVector1.y,
-						collisionFlagArray[i].collisionVertexVector2.x,
-						collisionFlagArray[i].collisionVertexVector2.y);
-			}
-			printf("------------------------------------------------------\n");
-		}
-	}
-
-
-public:
-
-	int numCollisionFlags;
-	CollisionFlag *collisionFlagArray;
-
-};
-
-// CollisionDataObjectQuickInit assumes CollisionData ID and numVertices have been initialized for the object
-void CollisionDataObjectQuickInit(CollisionData& collisionData);
-void DisplaceCollisionDataObject(sf::Vector2f displacement, CollisionData& collisionObject);
-void SetCollisionDataPosition(sf::Vector2f position, CollisionData &collisionData);
-sf::Vector2f FindClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
-sf::Vector2f FindSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
-sf::Vector2f FurthestVertexFromVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
-sf::Vector2f Vector2Project(sf::Vector2f aVec, sf::Vector2f bVec);
-int IndexOfClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
-int IndexOfSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount);
 
 int main()
-{			
+{				
 	GameWindow gameWindow;
-	GameInput gameInput;
-	const int numCollisionDataObjects = 2;
-	CollisionData collisionObject[numCollisionDataObjects];	
-	CollisionFlagContainer collisionFlagContainer;
+	GameInput gameInput;		
+	CollisionSystem collisionSystem;
 
-	// Some debugging vectors
-	sf::VertexArray vectorToCollisionInterface(sf::Lines, 2);
-	sf::VertexArray vectorToClosestBVector(sf::Lines, 2);
-	sf::VertexArray vectorToClosestAVector(sf::Lines, 2);
-	sf::VertexArray vectorSecondToClosestAVector(sf::Lines, 2);
-	sf::VertexArray vectorDifferenceBetweenAVectors(sf::Lines, 2);
-
-	// Start debug vector initialization
-	vectorToCollisionInterface[0].color = sf::Color::Black;
-	vectorToCollisionInterface[1].color = sf::Color::Black;
-	vectorToCollisionInterface[0].position = sf::Vector2f(0, 0);
-	vectorToCollisionInterface[1].position = sf::Vector2f(0, 0);
-	
-	vectorToClosestBVector[0].color = sf::Color::Black;
-	vectorToClosestBVector[1].color = sf::Color::Black;
-	vectorToClosestBVector[0].position = sf::Vector2f(0,0);
-
-	vectorToClosestAVector[0].color = sf::Color::Black;
-	vectorToClosestAVector[1].color = sf::Color::Black;
-	vectorToClosestAVector[0].position = sf::Vector2f(0, 0);
-
-	vectorSecondToClosestAVector[0].color = sf::Color::Black;
-	vectorSecondToClosestAVector[1].color = sf::Color::Black;
-	vectorSecondToClosestAVector[0].position = sf::Vector2f(0, 0);
-
-	vectorDifferenceBetweenAVectors[0].color = sf::Color::Black;
-	vectorDifferenceBetweenAVectors[1].color = sf::Color::Black;
-	vectorDifferenceBetweenAVectors[0].position = sf::Vector2f(0,0);
-	// End debug vector initialization
-
-	gameInput.GameInputInitialize();
-	collisionFlagContainer.Initialize();
-
-	collisionObject[0].collisionDataID = 0;
-	collisionObject[1].collisionDataID = 1;
-
-	// Triangular objects
-	collisionObject[0].numVertices = 3;
-	collisionObject[1].numVertices = 3;
-
-	collisionObject[0].CollisionDataMalloc();
-	collisionObject[1].CollisionDataMalloc();
-
-	CollisionDataObjectQuickInit(collisionObject[0]);
-	CollisionDataObjectQuickInit(collisionObject[1]);
-
-	DisplaceCollisionDataObject(sf::Vector2f(350, 275), collisionObject[0]);
-	DisplaceCollisionDataObject(sf::Vector2f(400, 300), collisionObject[1]);
-
+	gameInput.Initialize();
 	gameWindow.Initialize();
+	collisionSystem.Initialize();
 
-	sf::Clock clock;
+	
+	int collisionObject1ID = collisionSystem.AddCollisionObject();
+	int collisionObject2ID = collisionSystem.AddCollisionObject();
+
+	// Need way to initialize collision objects after getting their IDs
+	int object1Index = collisionSystem.GetCollisionObjectIndexFromID(collisionObject1ID);
+	collisionSystem.collisionObjectArray[object1Index].numVertices = 3;
+	CollisionDataObjectQuickInit(collisionSystem.collisionObjectArray[object1Index]);
 
 	while (gameWindow.WindowIsOpen()) {
 
 		gameInput.UpdateInputState(gameWindow.gameWindow_);
-
+		/*
 		if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::Escape) {
 			gameWindow.CloseWindow();
 		} else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::W) {
@@ -191,303 +53,19 @@ int main()
 			DisplaceCollisionDataObject(sf::Vector2f(0, 10), collisionObject[1]);
 		} else if (gameInput.keyboardInputData_.keyPressed_ == sf::Keyboard::Right) {
 			DisplaceCollisionDataObject(sf::Vector2f(10, 0), collisionObject[1]);
-		}
-
-		// For collision object A, find closest collision vertex of object B to object A
-		// If closest B vertex is closer to A's average vector than any of A's vertices, then there is a collision
-
-		collisionFlagContainer.ClearCollisionFlags();
+		}		
+		*/
 
 
-		for (int i = 0; i < numCollisionDataObjects; ++i) {
-			for (int j = i + 1; j < numCollisionDataObjects; ++j) {				
-
-				// Can get closest vertex Vector and Index in one function with pointer args: *closestVector, *closestIndex
-				sf::Vector2f closestBVector = FindClosestVertexToVector2(collisionObject[i].boundsAverageVector, 
-																		 collisionObject[j].collisionVerticesArray, 
-																		 collisionObject[j].numVertices);
-				
-				int indexOfClosestBVertex = IndexOfClosestVertexToVector2(collisionObject[i].boundsAverageVector,
-																		  collisionObject[j].collisionVerticesArray,
-																		  collisionObject[j].numVertices);
-
-				sf::Vector2f closestAVectorToBVector = FindClosestVertexToVector2(closestBVector,
-																				  collisionObject[i].collisionVerticesArray,
-																				  collisionObject[i].numVertices);
-				
-				int indexOfClosestAVectorToBVector = IndexOfClosestVertexToVector2(closestBVector,
-																				   collisionObject[i].collisionVerticesArray,
-																				   collisionObject[i].numVertices);
-
-				sf::Vector2f secondClosestAVectorToBVector = FindSecondClosestVertexToVector2(closestBVector, 
-																							  collisionObject[i].collisionVerticesArray,
-																							  collisionObject[i].numVertices);
-
-				int indexOfSecondClosestAVectorToBVector = IndexOfSecondClosestVertexToVector2(closestBVector,
-																							   collisionObject[i].collisionVerticesArray,
-																							   collisionObject[i].numVertices);
-
-				sf::Vector2f objectAAverageVector = collisionObject[i].boundsAverageVector;
-				
-				vectorToClosestBVector[1].position = closestBVector;
-				vectorToClosestAVector[1].position = closestAVectorToBVector;
-				vectorSecondToClosestAVector[1].position = secondClosestAVectorToBVector;
-				vectorDifferenceBetweenAVectors[0].position = closestAVectorToBVector;
-				vectorDifferenceBetweenAVectors[1].position = secondClosestAVectorToBVector;
-
-				// Need to use two closest A vertex vectors to B vertex vector to project B vertex vector
-				// onto difference vector of two A vectors. Then determine if B vector is closer to A avg vector than
-				// projected B vector (meaning B vector is inside object A, and a collision has occurred).
-
-				// may still need to add 'closestAVectorToBVector' to projectedClosest...Vectors
-				sf::Vector2f tempProjectedClosestBVectorOntoClosestAVectors = Vector2Project(closestBVector - secondClosestAVectorToBVector, closestAVectorToBVector- secondClosestAVectorToBVector);				
-
-				sf::Vector2f realProjectedClosestBVectorOntoClosestAVectors = secondClosestAVectorToBVector + tempProjectedClosestBVectorOntoClosestAVectors;
-
-				vectorToCollisionInterface[1].position = realProjectedClosestBVectorOntoClosestAVectors;
-
-				float magnitudeClosestBVectorToAAverageVector = Vector2Magnitude(objectAAverageVector - closestBVector);
-				float magnitudeProjectedClosestBVectorToAAverageVector = Vector2Magnitude(objectAAverageVector - realProjectedClosestBVectorOntoClosestAVectors);
-
-				if(magnitudeClosestBVectorToAAverageVector < magnitudeProjectedClosestBVectorToAAverageVector) {					
-					collisionFlagContainer.AddCollisionFlag(collisionObject[i].collisionDataID,
-															collisionObject[j].collisionDataID,
-															closestAVectorToBVector,
-															closestBVector);
-				}
-
-				if (clock.getElapsedTime().asMilliseconds() > 500) {
-					/*
-					printf("bVector: (%.2f,%.2f)\na1Vector: (%.2f,%.2f)\na2Vector: (%.2f,%.2f)\n",	closestBVector.x,
-																									closestBVector.y,
-																									closestAVectorToBVector.x,
-																									closestAVectorToBVector.y,
-																									secondClosestAVectorToBVector.x,
-																									secondClosestAVectorToBVector.y);
-					*/
-
-					if (collisionFlagContainer.numCollisionFlags > 0) {
-						printf("numCollisionFlags: %d\n", collisionFlagContainer.numCollisionFlags);
-						collisionFlagContainer.PrintCollisionFlags();
-					}
-
-					clock.restart();
-				}
-
-				// Change CollisionObject element vertex colors based on collision/proximity to other CollisionObject elements
-				// Reset vertex colors
-				for (int i = 0; i < numCollisionDataObjects; ++i) {
-					int numVertices = collisionObject[i].numVertices;
-					int collisionObjectID = collisionObject[i].collisionDataID;
-					for (int j = 0; j < numVertices; ++j) {
-
-						int colorInteger = 255 - (collisionObjectID * 7);
-						colorInteger %= 255;
-
-						sf::Color objectColor = sf::Color(colorInteger, colorInteger, colorInteger, 255);
-
-						collisionObject[i].collisionVerticesArray[j].color = objectColor;
-					}
-				}
-
-				// Change color of closest vertices
-				collisionObject[0].collisionVerticesArray[indexOfClosestAVectorToBVector].color = sf::Color::Blue;
-				collisionObject[0].collisionVerticesArray[indexOfSecondClosestAVectorToBVector].color = sf::Color::Yellow;
-				collisionObject[1].collisionVerticesArray[indexOfClosestBVertex].color = sf::Color::Green;
-				
-				// Change entire object color if there is a collision
-				int numCollisionFlags = collisionFlagContainer.numCollisionFlags;
-				for (int i = 0; i < numCollisionFlags; ++i) {
-					int collisionID1 = collisionFlagContainer.collisionFlagArray[i].collisionDataID1;
-					int collisionID2 = collisionFlagContainer.collisionFlagArray[i].collisionDataID2;
-					for (int j = 0; j < numCollisionDataObjects; ++j) {
-						// Change CollisionObject with ID1 to Magenta
-						if (collisionObject[j].collisionDataID == collisionID1) {
-							for (int k = 0; k < collisionObject[j].numVertices; ++k) {
-								collisionObject[j].collisionVerticesArray[k].color = sf::Color::Magenta;
-							}													 
-						} // Change CollisionObject with ID2 to Cyan
-						else if (collisionObject[j].collisionDataID == collisionID1) {
-							for (int k = 0; k < collisionObject[j].numVertices; ++k) {
-								collisionObject[j].collisionVerticesArray[k].color = sf::Color::Cyan;
-							}
-						}						
-					}					
-				}
-			}
-		}
-	
-		gameWindow.Clear(sf::Color::Red);
-		gameWindow.gameWindow_.draw(collisionObject[0].collisionVerticesArray,collisionObject[0].numVertices,sf::Triangles);
-		gameWindow.gameWindow_.draw(collisionObject[1].collisionVerticesArray, collisionObject[1].numVertices, sf::Triangles);
-		gameWindow.gameWindow_.draw(vectorToCollisionInterface);
-		gameWindow.gameWindow_.draw(vectorToClosestBVector);
-		gameWindow.gameWindow_.draw(vectorToClosestAVector);
-		gameWindow.gameWindow_.draw(vectorSecondToClosestAVector);
-		gameWindow.gameWindow_.draw(vectorDifferenceBetweenAVectors);		
+		gameWindow.Clear(sf::Color::Red);		
+		gameWindow.gameWindow_.draw(collisionSystem.collisionObjectArray[object1Index].collisionVerticesArray, collisionSystem.collisionObjectArray[object1Index].numVertices, sf::Triangles);
 		gameWindow.Display();
 	}
 
 	// Free/Destroy everything
-	collisionObject[0].CollisionDataFree();
-	collisionObject[1].CollisionDataFree();
-	collisionFlagContainer.Destroy();
-	gameInput.GameInputDestroy();
-	gameWindow.Destroy();
-	
+	collisionSystem.Destroy();
+	gameInput.Destroy();
+	gameWindow.Destroy();	
+
 	return 0;
-}
-
-
-void CollisionDataObjectQuickInit(CollisionData& collisionData)
-{
-	int numVertices = collisionData.numVertices;
-	int objectID = collisionData.collisionDataID;
-	int colorInteger = 255 - (objectID * 7);
-	colorInteger %= 255;
-
-	sf::Color objectColor = sf::Color(colorInteger, colorInteger, colorInteger, 255);
-
-	float deltaAngle = 2 * PI / numVertices;
-	float angle = 0;
-	float radius = 100;
-	
-	for (int i = 0; i < numVertices; ++i) {
-		collisionData.collisionVerticesArray[i].position = sf::Vector2f(radius*sin(angle), -radius*cos(angle));
-		angle += deltaAngle;
-		collisionData.collisionVerticesArray[i].color = objectColor;
-	}	
-
-	// Calculate average vector for collision data object
-	sf::Vector2f averageVector = VertexArrayVector2Average(collisionData.collisionVerticesArray, numVertices);
-
-	collisionData.boundsAverageVector = averageVector;
-}
-
-
-void DisplaceCollisionDataObject(sf::Vector2f displacement, CollisionData& collisionObject)
-{
-	int numVertices = collisionObject.numVertices;
-	for (int i = 0; i < numVertices; ++i) {
-		collisionObject.collisionVerticesArray[i].position += displacement;
-	}
-
-	collisionObject.boundsAverageVector = VertexArrayVector2Average(collisionObject.collisionVerticesArray, collisionObject.numVertices);
-}
-
-void SetCollisionDataPosition(sf::Vector2f position, CollisionData &collisionData)
-{
-	int numVertices = collisionData.numVertices;
-
-	for (int i = 0; i < numVertices; ++i) {
-		collisionData.collisionVerticesArray[i].position += position;
-	}
-
-	collisionData.boundsAverageVector = VertexArrayVector2Average(collisionData.collisionVerticesArray, numVertices);
-}
-
-sf::Vector2f FindClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
-{
-	sf::Vector2f closestVector = vertexArray[0].position;
-	float distanceBetweenVectors;
-	float minDistanceBetweenVectors = Vector2Magnitude(closestVector-vector);
-
-	for (int i = 0; i < vertexCount; ++i) {
-		distanceBetweenVectors = Vector2Magnitude(vertexArray[i].position - vector);
-		if (distanceBetweenVectors < minDistanceBetweenVectors) {
-			minDistanceBetweenVectors = distanceBetweenVectors;
-			closestVector = vertexArray[i].position;
-		}
-	}
-	
-	return closestVector;
-}
-
-sf::Vector2f FindSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
-{
-	sf::Vector2f closestVector = FindClosestVertexToVector2(vector, vertexArray, vertexCount);
-	sf::Vector2f secondClosestVector = FurthestVertexFromVector2(vector, vertexArray, vertexCount);
-	float closestVectorDistance = Vector2Magnitude(closestVector - vector);
-	float secondClosestVectorDistance = Vector2Magnitude(secondClosestVector - vector);
-	float distanceBetweenVectors;
-
-
-	for (int i = 0; i < vertexCount; ++i) {
-		distanceBetweenVectors = Vector2Magnitude(vertexArray[i].position - vector);
-		if((distanceBetweenVectors > closestVectorDistance) && (distanceBetweenVectors < secondClosestVectorDistance)){
-			secondClosestVectorDistance = distanceBetweenVectors;
-			secondClosestVector = vertexArray[i].position;
-		}
-	}
-
-	return secondClosestVector;
-}
-
-sf::Vector2f FurthestVertexFromVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
-{
-	sf::Vector2f furthestVector = sf::Vector2f(0,0);
-	float furthestDistance = 0;
-	float distanceToVector;
-
-	for (int i = 0; i < vertexCount; ++i) {
-		distanceToVector = Vector2Magnitude(vertexArray[i].position - vector);
-		if (distanceToVector > furthestDistance) {
-			furthestDistance = distanceToVector;
-			furthestVector = vertexArray[i].position;
-		}
-	}
-
-	return furthestVector;
-}
-
-sf::Vector2f Vector2Project(sf::Vector2f aVec, sf::Vector2f bVec)
-{
-	float aX = aVec.x;
-	float aY = aVec.y;
-	float bX = bVec.x;
-	float bY = bVec.y;
-
-	float aDotB = aX*bX + aY*bY;
-	float bSquared = bX*bX + bY*bY;
-	if (abs(bSquared) > 0) {
-		return (aDotB / bSquared)*bVec;
-	}
-	else {
-		return sf::Vector2f(-1.0, -1.0);
-	}
-}
-
-int IndexOfClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
-{	
-	float distanceBetweenVectors;
-	float minDistanceBetweenVectors = Vector2Magnitude(vertexArray[0].position - vector);
-	int indexOfClosestVertex = 0;
-
-	for (int i = 0; i < vertexCount; ++i) {
-		distanceBetweenVectors = Vector2Magnitude(vertexArray[i].position - vector);
-		if (distanceBetweenVectors < minDistanceBetweenVectors) {
-			minDistanceBetweenVectors = distanceBetweenVectors;
-			indexOfClosestVertex = i;
-		}
-	}
-
-	return indexOfClosestVertex;
-}
-
-int IndexOfSecondClosestVertexToVector2(sf::Vector2f vector, sf::Vertex *vertexArray, int vertexCount)
-{	
-	float closestVectorDistance = Vector2Magnitude(FindClosestVertexToVector2(vector, vertexArray, vertexCount) - vector);
-	float secondClosestVectorDistance = Vector2Magnitude(FurthestVertexFromVector2(vector, vertexArray, vertexCount) - vector);
-	float distanceBetweenVectors;
-	int indexOfSecondClosestVertex = 0;
-
-	for (int i = 0; i < vertexCount; ++i) {
-		distanceBetweenVectors = Vector2Magnitude(vertexArray[i].position - vector);
-		if ((distanceBetweenVectors > closestVectorDistance) && (distanceBetweenVectors < secondClosestVectorDistance)) {
-			secondClosestVectorDistance = distanceBetweenVectors;
-			indexOfSecondClosestVertex = i;
-		}
-	}
-
-	return indexOfSecondClosestVertex;
 }

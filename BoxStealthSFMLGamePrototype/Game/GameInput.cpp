@@ -1,6 +1,6 @@
 #include "GameInput.h"
 
-void GameInput::GameInputInitialize()
+void GameInput::Initialize()
 {
 	keyboardInputData_.Init();
 	mouseInputData_.Init();
@@ -19,6 +19,11 @@ void GameInput::GameInputInitialize()
 	}
 
 	printf("Game Input initialized\n");
+}
+
+void GameInput::Destroy()
+{
+	printf("Game Input destroyed\n");
 }
 
 void GameInput::UpdateInputState(sf::RenderWindow& window)
@@ -76,11 +81,6 @@ void GameInput::UpdateInputState(sf::RenderWindow& window)
 	sf::Vector2f joystickRightPos = sf::Vector2f(sf::Joystick::getAxisPosition(0, sf::Joystick::R), sf::Joystick::getAxisPosition(0, sf::Joystick::U));
 	controllerInputData_.controllerLeftJoystickPos_ = joystickLeftPos;
 	controllerInputData_.controllerRightJoystickPos_ = joystickRightPos;
-}
- 
-void GameInput::GameInputDestroy()
-{
-	printf("Game Input destroyed\n");
 }
 
 void GameInput::GetJoystickData()

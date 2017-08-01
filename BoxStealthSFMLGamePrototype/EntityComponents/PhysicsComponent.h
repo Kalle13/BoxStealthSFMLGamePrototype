@@ -49,27 +49,3 @@ public:
 	SceneGraph *sceneGraph_;	 // Scene graph pointer to allow for several children
 
 };
-
-
-
-/*------------------------------------------------------------------------------------------------*/
-/*------------------------------------ Other Physics Functions------------------------------------*/
-/*------------------------------------------------------------------------------------------------*/
-
-float Vector2Magnitude(sf::Vector2f vector);
-float Vector2Dot(sf::Vector2f vector1, sf::Vector2f vector2);
-float Vector2CrossProductSignedMagnitude(sf::Vector2f vector1, sf::Vector2f vector2);
-
-// Vector2ArrayAverage: Returns the average vector from an array of vectors
-sf::Vector2f Vector2ArrayAverage(sf::Vector2f *vector2Array, unsigned numVectors);
-sf::Vector2f VertexArrayVector2Average(sf::Vertex *vertexArray, int numVertices);
-
-// DistanceToFarthestVector2FromPoint: Returns the magnitude of the distance from a vector point to the farthest vector in an array
-float DistanceToFarthestVector2FromPoint(sf::Vector2f *vector2Array, unsigned numVectorsInArray, sf::Vector2f pointVector);
-
-// Use SmoothDisplacement inside of an sf::Transform "translate()" function to move an object smoothly
-// e.g. sf::Transform transfrom.translate(SmoothDisplacement(iVec, fVec, 10.0, deltaT));
-sf::Vector2f SmoothDisplacement(sf::Vector2f initialPositionVector, 
-								sf::Vector2f finalPositionVector, 
-								float speed, 
-								float deltaTimeInSeconds);
